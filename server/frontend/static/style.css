@@ -1,10 +1,12 @@
 h1 {
   font-family: "Copperplate";
+  padding-right: 5%; 
+  color: white;
 }
 
 h2 {
     font-family: "Copperplate";
-  }
+}
 
 img{
   width: 60%;
@@ -49,6 +51,12 @@ img{
   padding:5px;
 }
 
+.bkgrnd {
+    background-image: url("parking.png");
+    background-size:cover;
+    vertical-align: bottom;
+
+}
 .homepage_links{
   color:  rgb(97, 64, 128);
   padding: 25%;
@@ -59,6 +67,7 @@ img{
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  color: rgb(0, 76, 101);
 }
 
 .banner{
@@ -90,12 +99,13 @@ img{
   flex: 1;
   justify-content: flex-start;
   justify-self: center;
+  background-color: rgb(0, 76, 101);
 }
 
 .nav_item{
   margin-left:15px;
   font-size: 20px;
-  color: black;
+  color: rgb(0, 76, 101);
   align-self: center;
 }
 
