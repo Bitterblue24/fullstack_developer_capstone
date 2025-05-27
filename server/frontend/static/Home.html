@@ -4,25 +4,133 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="static/style.css">
   <link rel="stylesheet" href="static/bootstrap.min.css">
-<script>
 
+<script>
 const logout = async (e) => {
-//Include the code for logout here.
+    let logout_url = window.location.origin + "/djangoapp/logout/"; // Ensure trailing slash
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+    if (!csrftoken) {
+        alert("CSRF token not found. Logout aborted.");
+        return;
+    }
+
+    try {
+        const res = await fetch(logout_url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            // The default 'follow' redirect behavior is usually fine for fetch.
+            // But if you were building an API that needs to know about the redirect
+            // without following it, you'd use redirect: 'manual' or 'error'.
+            // For this case, 'follow' or default is okay.
+        });
+
+        // The key change: We don't await res.json() directly here.
+        // Instead, we check the response status.
+        // A 302 redirect means the request was processed and a redirect response was sent.
+        // We'll consider any successful HTTP status (2xx) or a redirect (3xx) as a sign
+        // that the server processed the logout.
+
+        // If res.ok is true, it means the *initial* fetch request itself was successful
+        // (i.e., no network error, status 2xx). It doesn't mean the *redirection* was followed
+        // within fetch. However, for a logout where the server just redirects, we often assume
+        // success if no error is thrown by fetch.
+
+        // Simpler approach for client-side JavaScript that initiates a redirect:
+        // Assume success if no error is thrown by fetch and then proceed with client-side state.
+        // The actual browser will handle the redirect.
+
+        let username = sessionStorage.getItem('username');
+        sessionStorage.removeItem('username');
+        alert("Logging out " + username + "...");
+        // After logout, the server sends a redirect, so the browser will navigate automatically.
+        // We only need to clear the session storage client-side.
+        // Removing window.location.href and window.location.reload() from here is crucial,
+        // as the browser is already handling the navigation.
+        // If the browser *doesn't* follow the redirect (e.g., if fetch was configured 'manual'),
+        // THEN you'd need client-side redirection. But fetch's default is 'follow'.
+
+        // You might still want a client-side redirect if fetch's 'follow' doesn't cause
+        // the actual browser window to change URL, which can happen in some complex scenarios.
+        // However, for LogoutView, the browser usually handles it cleanly.
+        // For robustness, it's safer to explicitly redirect client-side after sessionStorage clear.
+        window.location.href = window.location.origin;
+
+    } catch (error) {
+        console.error("Logout failed:", error);
+        alert("The user could not be logged out. Error: " + error.message);
+    }
 };
 
-let checkSession = ()=>{
-  let curr_user = sessionStorage.getItem("username");
+let checkSession = () => {
+    let curr_user = sessionStorage.getItem("username");
 
-  if (curr_user && curr_user !== "") {
-    document.getElementById("loginlogout").innerHTML = 
-    '<span class="homepage_links">' + curr_user +'</span>' +
-    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
-  } else {
-    document.getElementById("loginlogout").innerHTML = 
-    '<a class="homepage_links" href="/login">Login</a>'+
-    '<a class="homepage_links"  href="/register">Register</a>'
-  }
- }
+    if (curr_user && curr_user !== "") {
+        document.getElementById("loginlogout").innerHTML =
+            '<span class="homepage_links">' + curr_user + '</span>' +
+            '<a class="homepage_links" href="#" onclick="logout(); return false;">Logout</a>';
+    } else {
+        document.getElementById("loginlogout").innerHTML =
+            '<a class="homepage_links" href="/login/">Login</a>' +
+            '<a class="homepage_links" href="/register/">Register</a>';
+    }
+};
+
+document.addEventListener('DOMContentLoaded', checkSession);
+
+//const logout = async (e) => {
+// Build logout URL and Make GET request to logout endpoint
+  //let logout_url = window.location.origin+"/djangoapp/logout";
+  //const res = await fetch(logout_url, {
+    //method: "POST",
+  //});
+
+  //const json = await res.json();
+  //if (json) {
+    // Clear session storage and reload page
+    //let username = sessionStorage.getItem('username');
+    //sessionStorage.removeItem('username');
+    //window.location.href = window.location.origin;
+    //window.location.reload();
+     // Notify user of logout
+    //alert("Logging out "+username+"...") 
+  //}
+  //else {
+    //alert("The user could not be logged out.")
+  //}
+//};
+
+//let checkSession = ()=>{
+  //let curr_user = sessionStorage.getItem("username");
+
+  //if (curr_user && curr_user !== "") {
+    //document.getElementById("loginlogout").innerHTML = 
+    //'<span class="homepage_links">' + curr_user +'</span>' +
+    //'<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
+  //} else {
+    //document.getElementById("loginlogout").innerHTML = 
+    //'<a class="homepage_links" href="/login">Login</a>'+
+    //'<a class="homepage_links"  href="/register">Register</a>'
+  //}
+ //}
 </script>
 </head>
 <body onload="checkSession()">
