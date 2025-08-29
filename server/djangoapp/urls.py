@@ -13,7 +13,7 @@ urlpatterns = [
     # paths for login/logout
     path(route='login', view=views.login_user, name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    path('register/', view=views.registration, name='register'),
+    path('register', view=views.registration, name='register'),
     
     #paths for retreiving data
     path(route='get_cars', view=views.get_cars, name ='getcars'),
