@@ -60,16 +60,16 @@ def registration(request):
         # Check if user already exists
         User.objects.get(username=username)
         username_exist = True
-    except Exception as e:
-        # If not, simply log this is a new user
+    except Exception as e:  # If not, simply log this is a new user
+        print(f"Error: {e}")
         logger.debug("{} is new user".format(username))
 
     # If it is a new user
     if not username_exist:
         # Create user in auth_user table
         user = User.objects.create_user(username=username,
-            first_name=first_name, last_name=last_name,
-            password=password, email=email)
+                first_name=first_name, last_name=last_name,
+                password=password, email=email)
         # Login the user and redirect to list page
         login(request, user)
         data = {"userName": username, "status": "Authenticated"}
@@ -89,14 +89,14 @@ def get_cars(request):
     cars = []
     for car_model in car_models:
         cars.append({"CarModel": car_model.name,
-            "CarMake": car_model.car_make.name})
+                "CarMake": car_model.car_make.name})
     return JsonResponse({"CarModels": cars})
 
 
-# Render list of dealerships all by default, particular state if state is passed
+# Render all dealerships by default, unless state is passed
 # whitespace after keyword in this chunk
 def get_dealerships(request, state="All"):
-    if(state == "All"):
+    if (state == "All"):
         endpoint = "/fetchDealers"
     else:
         endpoint = "/fetchDealers/"+state
@@ -139,5 +139,5 @@ def add_review(request):
         except Exception as e:
             logger.error(f"Error posting review: {e}")
             return JsonResponse({"status": 401, "message":
-            "Error in posting review"})
+                "Error in posting review"})
     return JsonResponse({"status": 403, "message": "Unauthorized"})
