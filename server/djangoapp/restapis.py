@@ -7,14 +7,14 @@ load_dotenv()
 backend_url = os.getenv(
     'backend_url', default="http://localhost:3030")
 sentiment_analyzer_url = os.getenv(
-    'sentiment_analyzer_url', 
-    default = "http://localhost:5050/")
+    'sentiment_analyzer_url',
+    default="http://localhost:5050/")
 
 
 def get_request(endpoint, **kwargs):
     params = ""
-    if(kwargs):
-        for key,value in kwargs.items():
+    if (kwargs):
+        for key, value in kwargs.items():
             params = params + key + "=" + value + "&"
 
     request_url = backend_url + endpoint + "?" + params
@@ -26,7 +26,7 @@ def get_request(endpoint, **kwargs):
         return response.json()
     except Exception as e:
         # If any error occurs
-        print("Error: Network exception occurred")
+        print(f"Error: {e}")
 
 
 def analyze_review_sentiments(text):
@@ -46,5 +46,5 @@ def post_review(data_dict):
         response = requests.post(request_url, json=data_dict)
         print(response.json())
         return response.json()
-    except:
-        print("Network exception occurred")
+    except Exception as e:
+        print(f"Error: {e}")
