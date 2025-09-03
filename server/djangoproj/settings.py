@@ -28,7 +28,7 @@ SECRET_KEY =\
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',     'https://taylorguasta-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.  # noqa: E501ai']
+ALLOWED_HOSTS = ['localhost', 'https://taylorguasta-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass']  # noqa: E501ai
 CSRF_TRUSTED_ORIGINS = ['https://taylorguasta-8000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai', 'https://taylorguasta-8000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai']  # noqa: E501
 
 REST_FRAMEWORK = {
